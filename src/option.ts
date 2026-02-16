@@ -4,10 +4,10 @@ import { getTextInLanguage, LanguageStringKey } from './lang/helpers';
 import LinterPlugin from './main';
 import { richDescription } from './ui/helpers';
 import { LinterSettings } from './settings-data';
-import { CustomAutoCorrectContent } from './settings-data';
+import { CustomAutoCorrectContent, CustomReplace } from './settings-data';
 import MdFileSuggester from './ui/suggesters/md-file-suggester';
 import { ParseResultsModal } from './ui/modals/parse-results-modal';
-import { ListItemsModal, ListItemValidation } from './ui/modals/add-list-entry-modals'
+import { CustomRegexModal, ListItemsModal, ListItemValidation } from './ui/modals/add-list-entry-modals'
 import { parseCustomReplacements, stripCr } from './utils/strings';
 import { LinterSettingsKeys } from './settings-data';
 
@@ -406,4 +406,42 @@ export function createListManagementPage<T>(opts: {
     desc: opts.desc,
     items: [list],
   };
+}
+
+export class RegexReplaceOption extends Option {
+  constructor(configKey: string, nameKey: LanguageStringKey, descriptionKey: LanguageStringKey, ruleAlias?: string | null) {
+    super(configKey, nameKey, descriptionKey, [], ruleAlias);
+  }
+
+  public getSettingDefinition(plugin: LinterPlugin, update: () => void): SettingDefinitionItem {
+    plugin.settings.ruleConfigs[this.ruleAlias] ??= {};
+    plugin.settings.ruleConfigs[this.ruleAlias][this.configKey] =
+      plugin.settings.ruleConfigs[this.ruleAlias][this.configKey] as CustomReplace[] | undefined ?? [];
+    const regexes = plugin.settings.ruleConfigs[this.ruleAlias][this.configKey] as CustomReplace[];
+
+    return createListManagementPage({
+      name: this.getName(),
+      desc: richDescription(this.getDescription()),
+      addButtonText: getTextInLanguage('options.custom-replace.add-input-button-text'),
+      emptyState: getTextInLanguage('options.custom-replace.empty-state'),
+      values: regexes,
+      allowReorder: true,
+      openAddForm: () => new CustomRegexModal(plugin.app, null, async (entry) => {
+        regexes.push(entry);
+        await plugin.saveSettings();
+        update();
+      }).open(),
+      openEditForm: (entry, index) => new CustomRegexModal(plugin.app, entry, async (updated) => {
+        regexes[index] = updated;
+        await plugin.saveSettings();
+        update();
+      }).open(),
+      editTooltip: getTextInLanguage('options.custom-replace.edit-tooltip'),
+      onDelete: (index) => regexes.splice(index, 1),
+      itemName: (entry) => entry.label || entry.find || getTextInLanguage('options.custom-replace.label-placeholder-text'),
+      itemDesc: (entry) => entry.find && entry.label ? entry.find : undefined,
+      itemIsDisabled: (entry) => !entry.enabled,
+      plugin: plugin,
+    });
+  }
 }
