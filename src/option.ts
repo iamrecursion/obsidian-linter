@@ -4,9 +4,10 @@ import {getTextInLanguage, LanguageStringKey} from './lang/helpers';
 import LinterPlugin from './main';
 import {richDescription} from './ui/helpers';
 import {LinterSettings} from './settings-data';
-import { CustomAutoCorrectContent } from './settings-data';
+import { CustomAutoCorrectContent, CustomReplace } from './settings-data';
 import MdFileSuggester from './ui/suggesters/md-file-suggester';
 import {ParseResultsModal} from './ui/modals/parse-results-modal';
+import {CustomRegexModal} from './ui/modals/add-list-entry-modals';
 import {parseCustomReplacements, stripCr} from './utils/strings';
 
 function getFileFromPath(app: App, filePath: string): TFile | null {
@@ -298,6 +299,72 @@ export class MdFilePickerOption extends Option {
       type: 'page',
       name: this.getName(),
       desc: warning,
+      items: [list],
+    };
+  }
+}
+
+export class RegexReplaceOption extends Option {
+  constructor(configKey: string, nameKey: LanguageStringKey, descriptionKey: LanguageStringKey, ruleAlias?: string | null) {
+    super(configKey, nameKey, descriptionKey, [], ruleAlias);
+  }
+
+  public getSettingDefinition(plugin: LinterPlugin, update: () => void): SettingDefinitionItem {
+    plugin.settings.ruleConfigs[this.ruleAlias] ??= {};
+    plugin.settings.ruleConfigs[this.ruleAlias][this.configKey] =
+        plugin.settings.ruleConfigs[this.ruleAlias][this.configKey] as CustomReplace[] | undefined ?? [];
+    const regexes = plugin.settings.ruleConfigs[this.ruleAlias][this.configKey] as CustomReplace[];
+
+    const list: SettingDefinitionList = {
+      type: 'list',
+      emptyState: getTextInLanguage('options.custom-replace.empty-state'),
+      addItem: {
+        name: getTextInLanguage('options.custom-replace.add-input-button-text'),
+        action: () => new CustomRegexModal(plugin.app, null, async (entry) => {
+          regexes.push(entry);
+          await plugin.saveSettings();
+          update();
+        }).open(),
+      },
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises -- I don't have control over this, so we may as well ignore the promise mismatch
+      onDelete: async (index: number) => {
+        regexes.splice(index, 1);
+        await plugin.saveSettings();
+        update();
+      },
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises -- I don't have control over this, so we may as well ignore the promise mismatch
+      onReorder: async (oldIndex: number, newIndex: number) => {
+        const [moved] = regexes.splice(oldIndex, 1);
+        regexes.splice(newIndex, 0, moved);
+        await plugin.saveSettings();
+      },
+      items: regexes.map((entry): SettingDefinition => ({
+        name: entry.label || entry.find || getTextInLanguage('options.custom-replace.label-placeholder-text'),
+        desc: entry.find && entry.label ? entry.find : undefined,
+        searchable: false,
+        render: (setting) => {
+          if (!entry.enabled) {
+            setting.nameEl.addClass('disabled-list-entry');
+            setting.descEl.addClass('disabled-list-entry');
+          }
+          setting.addExtraButton((cb) => cb
+              .setIcon('lucide-pencil')
+              .setTooltip(getTextInLanguage('options.custom-replace.edit-tooltip'))
+              // Resolve the live index at click time — a captured map index
+              // goes stale after a reorder or delete.
+              .onClick(() => new CustomRegexModal(plugin.app, entry, async (updated) => {
+                regexes[regexes.indexOf(entry)] = updated;
+                await plugin.saveSettings();
+                update();
+              }).open()));
+        },
+      })),
+    };
+
+    return {
+      type: 'page',
+      name: this.getName(),
+      desc: richDescription(this.getDescription()),
       items: [list],
     };
   }

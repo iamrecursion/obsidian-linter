@@ -33,6 +33,7 @@ import AutoCorrectCommonMisspellings from './rules/auto-correct-common-misspelli
 import {yamlRegex} from './utils/regex';
 import AddBlankLineAfterYAML from './rules/add-blank-line-after-yaml';
 import ConsecutiveBlankLines from './rules/consecutive-blank-lines';
+import SortTaggedUnorderedLists from './rules/sort-tagged-unordered-lists';
 
 export type RunLinterRulesOptions = {
   oldText: string,
@@ -150,6 +151,10 @@ export class RulesRunner {
     let newText = runOptions.oldText;
     const postRuleLogText = getTextInLanguage('logs.post-rules');
     timingBegin(postRuleLogText);
+
+    // Sort tagged lists before any other formatting so the sorting is not broken by other formatting rules.
+    [newText] = SortTaggedUnorderedLists.applyIfEnabled(newText, runOptions.settings, this.disabledRules);
+
     [newText] = CapitalizeHeadings.applyIfEnabled(newText, runOptions.settings, this.disabledRules);
 
     [newText] = YamlTitle.applyIfEnabled(newText, runOptions.settings, this.disabledRules, {
