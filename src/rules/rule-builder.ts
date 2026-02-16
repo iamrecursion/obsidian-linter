@@ -1,11 +1,11 @@
 import { Example, Options, Rule, RuleType, registerRule } from '../rules';
 import { wrapLintError } from '../utils/error';
-import { BooleanOption, DropdownOption, DropdownRecord, MdFilePickerOption, MomentFormatOption, Option, ListItemOption, TextOption } from '../option';
+import { BooleanOption, DropdownOption, DropdownRecord, MdFilePickerOption, MomentFormatOption, Option, ListItemOption, RegexReplaceOption, TextOption } from '../option';
 import { logDebug, timingBegin, timingEnd } from '../utils/logger';
 import { getTextInLanguage, LanguageStringKey } from '../lang/helpers';
 import { IgnoreType, IgnoreTypes } from '../utils/ignore-types';
 import { LintContext, ProtectedRanges } from '../utils/protected-ranges';
-import { LinterSettings } from '../settings-data';
+import { CustomReplace, LinterSettings } from '../settings-data';
 import { App } from 'obsidian';
 import LinterPlugin from '../main';
 import type { ListItemValidation } from '../ui/modals/add-list-entry-modals';
@@ -347,5 +347,11 @@ export class MomentFormatOptionBuilder<TOptions extends Options> extends OptionB
 export class MdFilePickerOptionBuilder<TOptions extends Options> extends OptionBuilder<TOptions, string[]> {
   protected buildOption(): Option {
     return new MdFilePickerOption(this.configKey, this.nameKey, this.descriptionKey);
+  }
+}
+
+export class RegexReplaceOptionBuilder<TOptions extends Options> extends OptionBuilder<TOptions, CustomReplace[]> {
+  protected buildOption(): Option {
+    return new RegexReplaceOption(this.configKey, this.nameKey, this.descriptionKey);
   }
 }

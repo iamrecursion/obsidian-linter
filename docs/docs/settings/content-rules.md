@@ -1214,6 +1214,57 @@ Lorem ipsum dolor sit amet.
 ``````
 </details>
 
+## Sort Tagged Unordered Lists
+
+Alias: `sort-tagged-unordered-lists`
+
+Sorts unordered lists marked with user-specified tags into alphabetical order while ignoring user-specified characters.
+
+### Options
+
+| Name | Description | List Items | Default Value |
+| ---- | ----------- | ---------- | ------------- |
+| `Start Sorted List Pattern` | The pattern that indicates the start of a sorted list. | N/A | `<!-- SortedList -->` |
+| `End Sorted List Pattern` | The pattern that indicates the end of a sorted list. | N/A | `<!-- /SortedList -->` |
+| `Replacements Before Sorting` | The pattern that indicates the end of a sorted list. | N/A |  |
+
+
+
+### Examples
+
+<details><summary>Sorts list items into order after applying custom rewrite rules to generate the sort key.</summary>
+
+Before:
+
+`````` markdown
+<!-- SortedList -->
+
+- B
+- [[Charlie]]
+- [[Charlie|My own name]]
+- A
+- F
+- D
+
+<!-- /SortedList -->
+``````
+
+After:
+
+`````` markdown
+<!-- SortedList -->
+
+- A
+- B
+- [[Charlie]]
+- D
+- F
+- [[Charlie|My own name]]
+
+<!-- /SortedList -->
+``````
+</details>
+
 ## Strong style
 
 Alias: `strong-style`

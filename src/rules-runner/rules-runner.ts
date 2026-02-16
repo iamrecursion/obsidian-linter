@@ -30,6 +30,7 @@ import YamlTitleAlias from '../rules/yaml-title-alias';
 import ConsecutiveBlankLines from '../rules/consecutive-blank-lines';
 import { yamlRegex } from '../utils/regex';
 import AddBlankLineAfterYAML from '../rules/add-blank-line-after-yaml';
+import SortTaggedUnorderedLists from '../rules/sort-tagged-unordered-lists';
 import { LintContext, replaceUnprotectedRegexMatches } from '../utils/protected-ranges';
 import { addEditsIfTheyDoNotClash, getEditsBetween } from '../utils/text-edits';
 import MoveInlineFieldsToYaml from '../rules/move-inline-fields-to-yaml';
@@ -157,6 +158,10 @@ export function runAfterRegularRules(currentText: string, runOptions: RunLinterR
   let newText = currentText;
   const postRuleLogText = getTextInLanguage('logs.post-rules');
   timingBegin(postRuleLogText);
+
+  // Sort tagged lists before any other formatting so the sorting is not broken by other formatting rules.
+  [newText] = SortTaggedUnorderedLists.applyIfEnabled(newText, runOptions.settings, runOptions.disabledRules);
+
   [newText] = CapitalizeHeadings.applyIfEnabled(newText, runOptions.settings, runOptions.disabledRules);
 
   [newText] = YamlTitle.applyIfEnabled(newText, runOptions.settings, runOptions.disabledRules, {
