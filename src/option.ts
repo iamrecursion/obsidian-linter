@@ -4,6 +4,7 @@ import LinterPlugin from './main';
 import {hideEl, unhideEl, setElContent} from './ui/helpers';
 import {LinterSettings} from './settings-data';
 import {AutoCorrectFilesPickerOption} from './ui/linter-components/auto-correct-files-picker-option';
+import {CustomReplaceOption} from './ui/linter-components/custom-replace-option';
 
 export type SearchOptionInfo = {name: string, description: string, options?: DropdownRecord[]}
 
@@ -216,6 +217,32 @@ export class MdFilePickerOption extends Option {
     this.settingEl = containerEl.createDiv();
 
     new AutoCorrectFilesPickerOption(this.settingEl, settings.ruleConfigs[this.ruleAlias][this.configKey], plugin.app, () => {
+      void plugin.saveSettings();
+    }, this.nameKey, this.descriptionKey);
+  }
+
+  override hide() {
+    hideEl(this.settingEl);
+  }
+
+  override unhide() {
+    unhideEl(this.settingEl);
+  }
+}
+
+export class RegexReplaceOption extends Option {
+  private settingEl: HTMLDivElement;
+
+  constructor(configKey: string, nameKey: LanguageStringKey, descriptionKey: LanguageStringKey, ruleAlias?: string | null) {
+    super(configKey, nameKey, descriptionKey, [], ruleAlias);
+  }
+
+  public display(containerEl: HTMLElement, settings: LinterSettings, plugin: LinterPlugin): void {
+    settings.ruleConfigs[this.ruleAlias][this.configKey] = settings.ruleConfigs[this.ruleAlias][this.configKey] ?? [];
+
+    this.settingEl = containerEl.createDiv();
+
+    new CustomReplaceOption(this.settingEl, settings.ruleConfigs[this.ruleAlias][this.configKey], plugin.app, () => {
       void plugin.saveSettings();
     }, this.nameKey, this.descriptionKey);
   }

@@ -755,6 +755,23 @@ export default {
         'description': 'The YAML keys to remove from the YAML frontmatter with or without colons',
       },
     },
+    // sort-tagged-unordered-lists.ts
+    'sort-tagged-unordered-lists': {
+      'name': 'Sort Tagged Unordered Lists',
+      'description': 'Sorts unordered lists marked with user-specified tags into alphabetical order while ignoring user-specified characters.',
+      'start-sorted-list-pattern': {
+        'name': 'Start Sorted List Pattern',
+        'description': 'The pattern that indicates the start of a sorted list.',
+      },
+      'end-sorted-list-pattern': {
+        'name': 'End Sorted List Pattern',
+        'description': 'The pattern that indicates the end of a sorted list.',
+      },
+      'pre-sort-replacements': {
+        'name': 'Replacements Before Sorting',
+        'description': 'The following regex rules will be run, in order, on the content between the patterns before the sorting is carried out. They will not affect the content itself, only the sorting behavior.',
+      },
+    },
     // sort-yaml-array-values.ts
     'sort-yaml-array-values': {
       'name': 'Sort YAML array values',

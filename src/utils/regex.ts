@@ -49,6 +49,7 @@ export const indentedOrBlockquoteNestedChecklistIndicatorRegex = new RegExp(`^${
 export const nonBlockquoteChecklistRegex = new RegExp(`^\\s*- ${checklistBoxIndicator} `);
 
 export const startsWithListMarkerRegex = new RegExp(`^\\s*(- |\\* |\\+ |\\d+[.)] |- (${checklistBoxIndicator}) )`, 'm');
+export const startsWithListMarkerRegexAtBaseline = new RegExp(`^(- |\\* |\\+ |\\d+[.)] |- (${checklistBoxIndicator}) )`, 'm');
 
 export const footnoteDefinitionIndicatorAtStartOfLine = /^(\[\^[^\]]*\]) ?([,.;!:?])/gm;
 export const calloutTypeRegex = /^ ?\[![^\s]*\]/m;

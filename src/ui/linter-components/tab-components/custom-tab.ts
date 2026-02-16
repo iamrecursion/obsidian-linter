@@ -20,7 +20,7 @@ export class CustomTab extends Tab {
     const customReplaceEl = this.contentEl.createDiv();
     const customRegexes = new CustomReplaceOption(customReplaceEl, this.plugin.settings.customRegexes, this.app, () => {
       void this.plugin.saveSettings();
-    });
+    }, 'options.custom-replace.name', 'options.custom-replace.description');
     this.addSettingSearchInfo(customReplaceEl, customRegexes.name, customRegexes.description.replaceAll('\n', ' ') + customRegexes.warning.replaceAll('\n', ' '));
   }
 }
