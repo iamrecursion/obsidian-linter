@@ -18,6 +18,7 @@ export abstract class RuleBuilderBase {
   static getRule<TOptions extends Options>(this: (new() => RuleBuilder<TOptions>)): Rule {
     if (!RuleBuilderBase.#ruleMap.has(this.name)) {
       const builder = new this();
+      console.log(builder.nameKey);
       const rule = new Rule(builder.nameKey, builder.descriptionKey, builder.settingsKey, builder.alias, builder.type, builder.safeApply.bind(builder), builder.exampleBuilders.map((b) => b.example), builder.optionBuilders.map((b) => b.option), builder.hasSpecialExecutionOrder, builder.ignoreTypes, builder.disableConflictingOptions);
       RuleBuilderBase.#ruleMap.set(this.name, rule);
       RuleBuilderBase.#ruleBuilderMap.set(builder.alias, builder);

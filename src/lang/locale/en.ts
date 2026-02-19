@@ -602,6 +602,35 @@ export default {
       'name': 'Paragraph blank lines',
       'description': 'All paragraphs should have exactly one blank line both before and after.',
     },
+    // prettier.ts
+    'prettier': {
+      'name': 'Format With Prettier',
+      'description': 'Format the file content with prettier as the last step of running the linter.',
+      'prose-style': {
+        'name': 'Prose Style',
+        'description': 'Whether prose should be <em>wrapped</em>, <em>preserve</em> the current style, or <em>never</em> be wrapped.',
+      },
+      'print-width': {
+        'name': 'Print Width',
+        'description': 'The width at which the markdown text content should be wrapped if the prose is wrapped.',
+      },
+      'indent-width': {
+        'name': 'Indent Width',
+        'description': 'The number of spaces used for a single indentation level.',
+      },
+      'use-tabs': {
+        'name': 'Indent With Tabs',
+        'description': 'Use tabs for indentation levels. Note that spaces will still be used for alignment <em>within</em> an indentation level.',
+      },
+      'format-code': {
+        'name': 'Format Code Blocks',
+        'description': 'Enable Formatting of code blocks in supported languages. Supports <code>js(x)</code>, <code>ts(x)</code>, <code>(s)css</code>, <code>less</code>, <code>html</code>, <code>json</code>, <code>yaml</code>, <code>bpjs</code>, <code>dataviewjs</code>, and <code>datacorejs</code>.',
+      },
+      'format-yaml': {
+        'name': 'Format YAML Frontmatter',
+        'description': 'Allow prettier\'s YAML formatter to process the frontmatter in the note.',
+      },
+    },
     // prevent-double-checklist-indicator-on-paste.ts
     'prevent-double-checklist-indicator-on-paste': {
       'name': 'Prevent double checklist marker on Paste',

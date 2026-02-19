@@ -863,6 +863,42 @@ After:
 ``````
 </details>
 
+## Format With Prettier
+
+Alias: `prettier`
+
+Format the file content with prettier as the last step of running the linter.
+
+### Options
+
+| Name | Description | List Items | Default Value |
+| ---- | ----------- | ---------- | ------------- |
+| `Prose Style` | Whether prose should be <em>wrapped</em>, <em>preserve</em> the current style, or <em>never</em> be wrapped. | `Preserve`: Retains the wrapping behavior of each chunk of prose unchanged.<br/><br/>`Wrapped`: Wraps all chunks of prose at the provided print width.<br/><br/>`Never`: Unwraps each chunk of prose onto a single line. | `Preserve` |
+| `Print Width` | The width at which the markdown text content should be wrapped if the prose is wrapped. | N/A | `100` |
+| `Indent Width` | The number of spaces used for a single indentation level. | N/A | `2` |
+| `Indent With Tabs` | Use tabs for indentation levels. Note that spaces will still be used for alignment <em>within</em> an indentation level. | N/A | false |
+| `Format Code Blocks` | Enable Formatting of code blocks in supported languages. Supports <code>js(x)</code>, <code>ts(x)</code>, <code>(s)css</code>, <code>less</code>, <code>html</code>, <code>json</code>, <code>yaml</code>, <code>bpjs</code>, <code>dataviewjs</code>, and <code>datacorejs</code>. | N/A | false |
+| `Format YAML Frontmatter` | Allow prettier's YAML formatter to process the frontmatter in the note. | N/A | false |
+
+
+
+### Examples
+
+<details><summary>Example</summary>
+
+Before:
+
+`````` markdown
+Before
+``````
+
+After:
+
+`````` markdown
+After
+``````
+</details>
+
 ## Proper ellipsis
 
 Alias: `proper-ellipsis`

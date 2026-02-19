@@ -106,7 +106,7 @@ export class TextOption extends Option {
   public display(containerEl: HTMLElement, settings: LinterSettings, plugin: LinterPlugin): void {
     this.setting = new Setting(containerEl)
         .addText((textbox) => {
-          textbox.setValue(settings.ruleConfigs[this.ruleAlias][this.configKey]);
+          textbox.setValue(settings.ruleConfigs[this.ruleAlias][this.configKey].toString());
           textbox.onChange((value) => {
             this.setOption(value, settings);
             plugin.settings = settings;
@@ -165,7 +165,7 @@ export class DropdownRecord {
   }
 
   getDisplayValue(): string {
-    return getTextInLanguage(this.value) ?? '';
+    return getTextInLanguage(this.value) ?? this.value.replace('enums.', '');
   }
 }
 

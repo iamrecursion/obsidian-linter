@@ -72,6 +72,7 @@
     "micromark-extension-math": "^3.0.0",
     "micromark-util-combine-extensions": "^2.0.0",
     "moment-parseformat": "^4.0.0",
+    "prettier": "^3.8.1",
     "quick-lru": "^7.0.0",
     "ts-dedent": "^2.2.0",
     "unist-util-visit": "^5.0.0",

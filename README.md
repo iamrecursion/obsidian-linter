@@ -57,6 +57,7 @@ Each rule is its own set of logic and is designed to be run independently. This 
 - [emphasis-style](https://platers.github.io/obsidian-linter/settings/content-rules/#emphasis-style)
 - [no-bare-urls](https://platers.github.io/obsidian-linter/settings/content-rules/#no-bare-urls)
 - [ordered-list-style](https://platers.github.io/obsidian-linter/settings/content-rules/#ordered-list-style)
+- [prettier](https://platers.github.io/obsidian-linter/settings/content-rules/#format-with-prettier)
 - [proper-ellipsis](https://platers.github.io/obsidian-linter/settings/content-rules/#proper-ellipsis)
 - [quote-style](https://platers.github.io/obsidian-linter/settings/content-rules/#quote-style)
 - [remove-consecutive-list-markers](https://platers.github.io/obsidian-linter/settings/content-rules/#remove-consecutive-list-markers)
