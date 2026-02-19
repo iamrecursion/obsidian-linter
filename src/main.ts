@@ -567,7 +567,8 @@ export default class LinterPlugin extends Plugin {
 
   async runLinterFile(file: TFile, lintingLastActiveFile: boolean = false) {
     const oldText = stripCr(await this.app.vault.read(file));
-    const newText = this.rulesRunner.lintText(createRunLinterRulesOptions(oldText, file, this.momentLocale, this.settings, this.defaultAutoCorrectMisspellings));
+    let newText = this.rulesRunner.lintText(createRunLinterRulesOptions(oldText, file, this.momentLocale, this.settings, this.defaultAutoCorrectMisspellings));
+    newText = await this.rulesRunner.runPrettier(createRunLinterRulesOptions(newText, file, this.momentLocale, this.settings, this.defaultAutoCorrectMisspellings));
 
     if (oldText != newText) {
       await this.app.vault.modify(file, newText);
@@ -669,6 +670,7 @@ export default class LinterPlugin extends Plugin {
     let newText: string;
     try {
       newText = this.rulesRunner.lintText(createRunLinterRulesOptions(oldText, file, this.momentLocale, this.settings, this.defaultAutoCorrectMisspellings));
+      newText = await this.rulesRunner.runPrettier(createRunLinterRulesOptions(newText, file, this.momentLocale, this.settings, this.defaultAutoCorrectMisspellings));
     } catch (error) {
       this.handleLintError(file, error instanceof Error ? error : new Error(String(error)), getTextInLanguage('commands.lint-file.error-message') + ' \'{FILE_PATH}\'', false);
       return;
@@ -690,6 +692,7 @@ export default class LinterPlugin extends Plugin {
     let newText: string;
     try {
       newText = this.rulesRunner.lintText(createRunLinterRulesOptions(oldText, file, this.momentLocale, this.settings, this.defaultAutoCorrectMisspellings));
+      newText = await this.rulesRunner.runPrettier(createRunLinterRulesOptions(newText, file, this.momentLocale, this.settings, this.defaultAutoCorrectMisspellings));
     } catch (error) {
       this.handleLintError(file, error instanceof Error ? error : new Error(String(error)), getTextInLanguage('commands.lint-file.error-message') + ' \'{FILE_PATH}\'', false);
       setCollectLogs(false);
