@@ -31,6 +31,7 @@ import ConsecutiveBlankLines from '../rules/consecutive-blank-lines';
 import { yamlRegex } from '../utils/regex';
 import AddBlankLineAfterYAML from '../rules/add-blank-line-after-yaml';
 import SortTaggedUnorderedLists from '../rules/sort-tagged-unordered-lists';
+import Prettier from '../rules/prettier';
 import { LintContext, replaceUnprotectedRegexMatches } from '../utils/protected-ranges';
 import { addEditsIfTheyDoNotClash, getEditsBetween } from '../utils/text-edits';
 import MoveInlineFieldsToYaml from '../rules/move-inline-fields-to-yaml';
@@ -301,6 +302,38 @@ export function runMainThreadRules(runOptions: RunLinterRulesOptions, getCurrent
   });
 
   runOptions.newText = newText;
+}
+
+/**
+ * Formats the linted text with Prettier, as the last thing to touch the document.
+ *
+ * Prettier is asynchronous and so cannot run in the worker alongside the rest of the rules, which
+ * hand their text along synchronously. It runs on the main thread once the worker's result and the
+ * main thread rules are both in, so that it sees the finished document and nothing reformats what
+ * it produced.
+ * @param {RunLinterRulesOptions} runOptions the options for the current run, whose newText is updated in place
+ */
+export async function runPrettier(runOptions: RunLinterRulesOptions): Promise<void> {
+  if (runOptions.skipFile) {
+    return;
+  }
+
+  const prettierRule = Prettier.getRule();
+  if (runOptions.disabledRules.includes(prettierRule.alias)) {
+    logDebug(prettierRule.alias + ' ' + getTextInLanguage('logs.disabled-text'));
+    return;
+  }
+
+  const options = Object.assign({}, prettierRule.getOptions(runOptions.settings));
+  if (!options[prettierRule.enabledOptionName()]) {
+    return;
+  }
+
+  try {
+    runOptions.newText = await (new Prettier).runPrettier(runOptions.newText, options);
+  } catch (error) {
+    wrapLintError(error instanceof Error ? error : new Error(String(error)), prettierRule.getName());
+  }
 }
 
 export function runCustomRegexReplacement(customRegexes: CustomReplace[], oldText: string): string {
