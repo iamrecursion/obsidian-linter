@@ -34,6 +34,7 @@ import {yamlRegex} from './utils/regex';
 import AddBlankLineAfterYAML from './rules/add-blank-line-after-yaml';
 import ConsecutiveBlankLines from './rules/consecutive-blank-lines';
 import SortTaggedUnorderedLists from './rules/sort-tagged-unordered-lists';
+import Prettier from './rules/prettier';
 
 export type RunLinterRulesOptions = {
   oldText: string,
@@ -310,6 +311,35 @@ export class RulesRunner {
     });
 
     return newText;
+  }
+
+  async runPrettier(runOptions: RunLinterRulesOptions): Promise<string> {
+    this.skipFile = false;
+    const originalText = runOptions.oldText;
+    [this.disabledRules, this.skipFile] = getDisabledRules(originalText);
+
+    if (this.skipFile) {
+      return originalText;
+    }
+
+    const prettierRule = Prettier.getRule();
+    if (this.disabledRules.includes(prettierRule.alias)) {
+      return originalText;
+    }
+
+    const settings = runOptions.settings;
+    const optionsFromSettings = prettierRule.getOptions(settings);
+    const options = Object.assign({}, optionsFromSettings);
+
+    if (optionsFromSettings[prettierRule.enabledOptionName()]) {
+      try {
+        return await (new Prettier).runPrettier(originalText, options);
+      } catch (error) {
+        wrapLintError(error instanceof Error ? error : new Error(String(error)), prettierRule.getName());
+      }
+    }
+
+    return originalText;
   }
 }
 

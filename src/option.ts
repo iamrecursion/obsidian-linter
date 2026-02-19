@@ -174,7 +174,7 @@ export class DropdownRecord {
   }
 
   getDisplayValue(): string {
-    return getTextInLanguage(this.value) ?? '';
+    return getTextInLanguage(this.value) ?? this.value.replace('enums.', '');
   }
 }
 
